@@ -1198,6 +1198,201 @@
         </nav>
     </div>
 
+
+    <!-- COMPONENT: SKELETON LOADER (PINEMIX) -->
+    <!-- Skeleton Loader -->
+    <!-- An Alpine.js and Tailwind CSS component by https://pinemix.com -->
+    <div
+      x-data="{
+        // Configuration
+        objects: {
+          image: true,
+          text: true,
+          list: false,
+          avatar: false,
+        },
+        animated: true,
+        rounded: 'lg', // '', 'sm', 'md', 'lg', 'xl', 'full'
+        isLoading: true,
+
+        // Content loaded
+        setLoaded() {
+          this.isLoading = false;
+        },
+        
+        // Get skeleton classes (animation + rounded)
+        getSkeletonClasses() {
+          return {
+            'animate-pulse': this.animated,
+            'rounded-sm': this.rounded === 'sm', 
+            'rounded-md': this.rounded === 'md',
+            'rounded-lg': this.rounded === 'lg',
+            'rounded-xl': this.rounded === 'xl',
+            'rounded-full': this.rounded === 'full'
+          };
+        }
+      }"
+    >
+      <!-- Content Container -->
+      <div
+        class="mx-auto mb-12 flex max-w-sm flex-col gap-6 rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-700/75 dark:bg-zinc-900"
+      >
+        <!-- Content Loaded -->
+        <div x-cloak x-show="!isLoading">Your content here..</div>
+        <!-- END Content Loaded -->
+
+        <!-- Skeleton: Image -->
+        <div x-cloak x-show="objects.image && isLoading">
+          <div
+            class="h-48 w-full bg-zinc-200 dark:bg-zinc-700"
+            x-bind:class="getSkeletonClasses()"
+          ></div>
+        </div>
+        <!-- END Skeleton: Image -->
+
+        <!-- Skeleton: Text -->
+        <div x-cloak x-show="objects.text && isLoading" class="space-y-4">
+          <template x-for="line in 4" :key="line">
+            <div
+              class="h-4 bg-zinc-200 dark:bg-zinc-700"
+              x-bind:class="getSkeletonClasses()"
+              :style="line === 4 ? 'width: 75%' : 'width: 100%'"
+            ></div>
+          </template>
+        </div>
+        <!-- END Skeleton: Text -->
+
+        <!-- Skeleton: List -->
+        <div x-cloak x-show="objects.list && isLoading" class="space-y-4">
+          <template x-for="item in 4" :key="item">
+            <div class="flex items-center gap-4">
+              <!-- Avatar -->
+              <div
+                class="h-10 w-10 flex-shrink-0 bg-zinc-200 dark:bg-zinc-700"
+                x-bind:class="{
+                  ...getSkeletonClasses(),
+                  'rounded-full': rounded === 'full' || true
+                }"
+              ></div>
+
+              <!-- Content -->
+              <div class="grow space-y-2">
+                <div
+                  class="h-4 bg-zinc-200 dark:bg-zinc-700"
+                  x-bind:class="getSkeletonClasses()"
+                  style="width: 40%"
+                ></div>
+                <div
+                  class="h-3 bg-zinc-200 dark:bg-zinc-700"
+                  x-bind:class="getSkeletonClasses()"
+                  style="width: 75%"
+                ></div>
+              </div>
+
+              <!-- Action placeholder -->
+              <div
+                class="h-6 w-16 bg-zinc-200 dark:bg-zinc-700"
+                x-bind:class="getSkeletonClasses()"
+              ></div>
+            </div>
+          </template>
+        </div>
+        <!-- END Skeleton: List -->
+
+        <!-- Skeleton: Avatar -->
+        <div
+          x-cloak
+          x-show="objects.avatar && isLoading"
+          class="flex items-center gap-4"
+        >
+          <div
+            class="size-16 bg-zinc-200 dark:bg-zinc-700"
+            x-bind:class="{
+            ...getSkeletonClasses(),
+            'rounded-full': rounded === 'full' || true
+          }"
+          ></div>
+          <div class="grow space-y-2">
+            <div
+              class="h-5 bg-zinc-200 dark:bg-zinc-700"
+              x-bind:class="getSkeletonClasses()"
+              style="width: 50%"
+            ></div>
+            <div
+              class="h-4 bg-zinc-200 dark:bg-zinc-700"
+              x-bind:class="getSkeletonClasses()"
+              style="width: 75%"
+            ></div>
+          </div>
+        </div>
+        <!-- END Skeleton: Avatar -->
+      </div>
+    </div>
+    <!-- End Skeleton Loader -->
+
+
+
+    <div class="flex flex-col">
+    <div class="overflow-x-auto">
+        <div class="inline-block min-w-full">
+            <div class="overflow-hidden border border-gray-200 rounded-md">
+                <table class="min-w-full divide-y divide-neutral-200/70">
+                    <thead>
+                        <tr class="text-neutral-800">
+                            <th class="px-5 py-3 text-xs font-medium text-left uppercase">Name</th>
+                            <th class="px-5 py-3 text-xs font-medium text-left uppercase">Age</th>
+                            <th class="px-5 py-3 text-xs font-medium text-left uppercase">Address</th>
+                            <th class="px-5 py-3 text-xs font-medium text-right uppercase">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-neutral-200/70">
+                        <tr class="text-neutral-600 bg-neutral-50">
+                            <td class="px-5 py-4 text-sm font-medium whitespace-nowrap">Richard Hendricks</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">30</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">Pied Piper HQ, Palo Alto</td>
+                            <td class="px-5 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                <a class="text-blue-600 hover:text-blue-700" href="#">Edit</a>
+                            </td>
+                        </tr>
+                        <tr class="text-neutral-800">
+                            <td class="px-5 py-4 text-sm font-medium whitespace-nowrap">Erlich Bachman</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">40</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">5230 Penfield Ave, Woodland Hills</td>
+                            <td class="px-5 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                <a class="text-blue-600 hover:text-blue-700" href="#">Edit</a>
+                            </td>
+                        </tr>
+                        <tr class="text-neutral-800 bg-neutral-50">
+                            <td class="px-5 py-4 text-sm font-medium whitespace-nowrap">Monica Hall</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">35</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">2030 Stewart Drive, Sunnyvale</td>
+                            <td class="px-5 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                <a class="text-blue-600 hover:text-blue-700" href="#">Edit</a>
+                            </td>
+                        </tr>
+                        <tr class="text-neutral-800">
+                            <td class="px-5 py-4 text-sm font-medium whitespace-nowrap">Dinesh Chugtai</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">28</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">Pied Piper HQ, Palo Alto</td>
+                            <td class="px-5 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                <a class="text-blue-600 hover:text-blue-700" href="#">Edit</a>
+                            </td>
+                        </tr>
+                        <tr class="text-neutral-800 bg-neutral-50">
+                            <td class="px-5 py-4 text-sm font-medium whitespace-nowrap">Gilfoyle</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">32</td>
+                            <td class="px-5 py-4 text-sm whitespace-nowrap">Pied Piper HQ, Palo Alto</td>
+                            <td class="px-5 py-4 text-sm font-medium text-right whitespace-nowrap">
+                                <a class="text-blue-600 hover:text-blue-700" href="#">Edit</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
   </div>
 </body>
 </html>
