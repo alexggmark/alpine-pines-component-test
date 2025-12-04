@@ -1,0 +1,331 @@
+
+  <nav x-data="navigationMenu()" class="relative z-10 w-full">
+      <div class="relative">
+          <ul class="flex flex-1 justify-center items-center p-1 space-x-1 list-none border-b text-neutral-700 group border-neutral-200/80 bg-white">
+              <template x-for="(item, index) in menuItems" :key="index">
+                  <li>
+                      <template x-if="item.dropdown">
+                          <button
+                              :class="{ 'bg-neutral-100' : navigationMenu === item.id, 'hover:bg-neutral-100' : navigationMenu !== item.id }" 
+                              @mouseenter="openMenu(item.id)" 
+                              @mouseleave="scheduleClose()" 
+                              class="inline-flex justify-center items-center px-4 py-2 w-max h-10 text-sm font-medium rounded-full transition-colors hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none group">
+                              <span x-text="item.label"></span> 
+                              <svg :class="{ '-rotate-180' : navigationMenuOpen && navigationMenu === item.id }" 
+                                  class="relative top-[1px] ml-1 h-3 w-3 ease-out duration-300" 
+                                  xmlns="http://www.w3.org/2000/svg" 
+                                  viewBox="0 0 24 24" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  stroke-width="2" 
+                                  stroke-linecap="round" 
+                                  stroke-linejoin="round">
+                                  <polyline points="6 9 12 15 18 9"></polyline>
+                              </svg>
+                          </button>
+                      </template>
+                      <template x-if="!item.dropdown">
+                          <a :href="item.url" 
+                              class="inline-flex justify-center items-center px-4 py-2 w-max h-10 text-sm font-medium rounded-full transition-colors hover:text-neutral-900 focus:outline-none disabled:opacity-50 disabled:pointer-events-none bg-background hover:bg-neutral-100 group">
+                              <span x-text="item.label"></span>
+                          </a>
+                      </template>
+                  </li>
+              </template>
+          </ul>
+      </div>
+
+      <!-- Fixed full-width dropdown container -->
+      <div x-show="navigationMenuOpen"
+          x-transition:enter="transition ease-out duration-200"
+          x-transition:enter-start="opacity-0 -translate-y-2"
+          x-transition:enter-end="opacity-100 translate-y-0"
+          x-transition:leave="transition ease-in duration-150"
+          x-transition:leave-start="opacity-100 translate-y-0"
+          x-transition:leave-end="opacity-0 -translate-y-2"
+          @mouseenter="cancelClose()" 
+          @mouseleave="scheduleClose()"
+          class="absolute left-0 right-0 top-full mt-0 w-full"
+          x-cloak>
+
+          <div class="w-full shadow-md">
+              <div class="bg-white max-w-5xl mx-auto overflow-hidden">
+                  
+                  <!-- Dynamic dropdown content -->
+                  <template x-for="(dropdown, dropdownId) in dropdownContent" :key="dropdownId">
+                      <div x-show="navigationMenu === dropdownId" class="p-8">
+                          <div class="grid grid-cols-4 gap-8">
+                              <template x-for="(column, index) in dropdown.columns" :key="index">
+                                  <div>
+                                      <!-- Links Column -->
+                                      <template x-if="column.type === 'links'">
+                                          <div>
+                                              <h3 class="text-sm font-semibold text-neutral-900 mb-4" x-text="column.title"></h3>
+                                              <ul class="space-y-3">
+                                                  <template x-for="link in column.links" :key="link.title">
+                                                      <li>
+                                                          <a :href="link.url" 
+                                                              @click="closeMenu()"
+                                                              class="group block">
+                                                              <span class="block text-sm font-medium text-neutral-900 group-hover:text-blue-500 transition-colors" x-text="link.title"></span>
+                                                              <span class="block text-xs text-neutral-500 mt-1" x-text="link.description"></span>
+                                                          </a>
+                                                      </li>
+                                                  </template>
+                                              </ul>
+                                          </div>
+                                      </template>
+
+                                      <!-- Banner Column -->
+                                      <template x-if="column.type === 'banner'">
+                                          <div class="relative h-full">
+                                              <div class="rounded-lg overflow-hidden h-full bg-gradient-to-br p-6 flex flex-col justify-between min-h-[240px]"
+                                                    :style="`background: linear-gradient(to bottom right, ${column.gradientFrom}, ${column.gradientTo})`">
+                                                  <div>
+                                                      <h3 class="text-lg font-bold text-white mb-2" x-text="column.title"></h3>
+                                                      <p class="text-sm text-white/90 mb-4" x-text="column.description"></p>
+                                                  </div>
+                                                  <div>
+                                                      <a :href="column.cta.url" 
+                                                          @click="closeMenu()"
+                                                          :class="column.cta.classes"
+                                                          class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                                          <span x-text="column.cta.text"></span>
+                                                          <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                                                          </svg>
+                                                      </a>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </template>
+                                  </div>
+                              </template>
+                          </div>
+                      </div>
+                  </template>
+
+              </div>
+          </div>
+      </div>
+  </nav>
+
+<script>
+    function navigationMenu() {
+        return {
+            navigationMenuOpen: false,
+            navigationMenu: '',
+            navigationMenuCloseTimeout: null,
+            navigationMenuCloseDelay: 200,
+
+            menuItems: [
+                {
+                    id: 'getting-started',
+                    label: 'Getting Started',
+                    dropdown: true
+                },
+                {
+                    id: 'learn-more',
+                    label: 'Learn More',
+                    dropdown: true
+                },
+                {
+                    id: 'documentation',
+                    label: 'Documentation',
+                    url: '#documentation',
+                    dropdown: false
+                },
+                {
+                    id: 'learn-more',
+                    label: 'Learn More',
+                    dropdown: false
+                },
+            ],
+
+            dropdownContent: {
+                'getting-started': {
+                    columns: [
+                        {
+                            type: 'links',
+                            title: 'Quick Start',
+                            links: [
+                                {
+                                    title: 'Introduction',
+                                    description: 'Learn the basics and get up to speed quickly',
+                                    url: '#introduction'
+                                },
+                                {
+                                    title: 'Installation',
+                                    description: 'Set up your development environment',
+                                    url: '#installation'
+                                },
+                                {
+                                    title: 'First Project',
+                                    description: 'Build your first project step by step',
+                                    url: '#first-project'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'links',
+                            title: 'Resources',
+                            links: [
+                                {
+                                    title: 'Components',
+                                    description: 'Browse our collection of UI components',
+                                    url: '#components'
+                                },
+                                {
+                                    title: 'Templates',
+                                    description: 'Pre-built templates to jumpstart your project',
+                                    url: '#templates'
+                                },
+                                {
+                                    title: 'Examples',
+                                    description: 'Real-world examples and use cases',
+                                    url: '#examples'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'links',
+                            title: 'Help & Support',
+                            links: [
+                                {
+                                    title: 'Documentation',
+                                    description: 'Comprehensive guides and API reference',
+                                    url: '#docs'
+                                },
+                                {
+                                    title: 'Community',
+                                    description: 'Join our community forum',
+                                    url: '#community'
+                                },
+                                {
+                                    title: 'FAQ',
+                                    description: 'Frequently asked questions',
+                                    url: '#faq'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'banner',
+                            title: 'Ready to Build?',
+                            description: 'Start creating amazing projects with our comprehensive toolkit and resources.',
+                            gradientFrom: '#379190',
+                            gradientTo: '#287271',
+                            cta: {
+                                text: 'Get Started Free',
+                                url: '#signup',
+                                classes: 'bg-white text-brand-primary hover:text-blue-500 hover:bg-blue-50'
+                            }
+                        }
+                    ]
+                },
+                'learn-more': {
+                    columns: [
+                        {
+                            type: 'links',
+                            title: 'Frameworks',
+                            links: [
+                                {
+                                    title: 'Tailwind CSS',
+                                    description: 'Utility-first CSS framework',
+                                    url: '#tailwind'
+                                },
+                                {
+                                    title: 'Alpine.js',
+                                    description: 'Lightweight JavaScript framework',
+                                    url: '#alpine'
+                                },
+                                {
+                                    title: 'Laravel',
+                                    description: 'PHP framework for web artisans',
+                                    url: '#laravel'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'links',
+                            title: 'Tools',
+                            links: [
+                                {
+                                    title: 'Livewire',
+                                    description: 'Full-stack framework for Laravel',
+                                    url: '#livewire'
+                                },
+                                {
+                                    title: 'Vite',
+                                    description: 'Next generation frontend tooling',
+                                    url: '#vite'
+                                },
+                                {
+                                    title: 'Tails',
+                                    description: 'Tailwind CSS design tool',
+                                    url: '#tails'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'links',
+                            title: 'Learning',
+                            links: [
+                                {
+                                    title: 'Video Tutorials',
+                                    description: 'Step-by-step video guides',
+                                    url: '#videos'
+                                },
+                                {
+                                    title: 'Blog',
+                                    description: 'Latest news and articles',
+                                    url: '#blog'
+                                },
+                                {
+                                    title: 'Courses',
+                                    description: 'In-depth courses and workshops',
+                                    url: '#courses'
+                                }
+                            ]
+                        },
+                        {
+                            type: 'banner',
+                            title: 'Expert Training',
+                            description: 'Take your skills to the next level with our advanced courses and certifications.',
+                            gradientFrom: '#059669',
+                            gradientTo: '#0f766e',
+                            cta: {
+                                text: 'Browse Courses',
+                                url: '#courses',
+                                classes: 'bg-white text-emerald-600 hover:bg-emerald-50'
+                            }
+                        }
+                    ]
+                }
+            },
+
+            openMenu(menuId) {
+                this.cancelClose();
+                this.navigationMenuOpen = true;
+                this.navigationMenu = menuId;
+            },
+
+            scheduleClose() {
+                this.navigationMenuCloseTimeout = setTimeout(() => {
+                    this.closeMenu();
+                }, this.navigationMenuCloseDelay);
+            },
+
+            cancelClose() {
+                if (this.navigationMenuCloseTimeout) {
+                    clearTimeout(this.navigationMenuCloseTimeout);
+                    this.navigationMenuCloseTimeout = null;
+                }
+            },
+
+            closeMenu() {
+                this.navigationMenuOpen = false;
+                this.navigationMenu = '';
+            }
+        }
+    }
+</script>

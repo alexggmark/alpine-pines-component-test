@@ -6,9 +6,14 @@
   <title>Test Page</title>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style type="text/tailwindcss">
+      @theme {
+        --color-clifford: #eeeeee;
+      }
+    </style>
 </head>
 <body> 
-  <div class="max-w-[800px] mx-auto">
+  <div class="max-w-[800px] mx-auto border border-clifford rounded-md p-4">
 
     <!-- COMPONENT: MODAL -->
     <div x-data="{ modalOpen: false }"
@@ -756,6 +761,7 @@
 
 
 
+    <!-- COMPONENT: ACCORDION -->
     <div x-data="{ 
         activeAccordion: '', 
         setActiveAccordion(id) { 
